@@ -1,27 +1,27 @@
-import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+import React, { useState } from "react";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import TextField from "@material-ui/core/TextField";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import Link from "@material-ui/core/Link";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
+      {"Copyright © "}
       <Link color="inherit" href="https://material-ui.com/">
         Procura
-      </Link>{' '}
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
@@ -29,16 +29,16 @@ function Copyright() {
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -47,13 +47,57 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn() {
+  const [username, setusername] = useState("");
+  const [password, setPassword] = useState("");
+  const [typeProc, setTypeProc] = useState(true);
+  const [typeMana, setTypeMana] = useState(false);
+
   const classes = useStyles();
+
+  const handleUsernameChange = (event) => {
+    const temp = event.target.value;
+    setusername((username) => temp);
+  };
+
+  const handlePasswordChange = (event) => {
+    const temp = event.target.value;
+    setPassword((password) => temp);
+  };
+  const handlSelectedProcurementChange = (event) => {
+    setTypeProc((typeProc) => true);
+    setTypeMana((typeMana) => false);
+  };
+  const handlSelectedManagementChange = (event) => {
+    setTypeMana((typeMana) => true);
+    setTypeProc((typeProc) => false);
+  };
+
+  const handleSubmit = (event) => {
+    // alert(username + "-" + password + "-" + typeProc + "-" + typeMana);
+
+    //validate
+
+    //If correct
+    var type = "";
+    if (typeProc === true) {
+      type = "procurementStaff";
+    } else if (typeMana === true) {
+      type = "managementStaff";
+    }
+
+    localStorage.setItem("username", username);
+    localStorage.setItem("type", type);
+
+    window.location = "/";
+  };
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-      <Typography  style={{ fontWeight: "bold"}} component="h2" variant="h2">Procura</Typography>
+        <Typography style={{ fontWeight: "bold" }} component="h2" variant="h2">
+          Procura
+        </Typography>
 
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
@@ -61,16 +105,19 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
+
         <form className={classes.form} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="username"
+            label="username"
+            name="username"
+            value={username}
+            onChange={handleUsernameChange}
+            // autoComplete="username"
             autoFocus
           />
           <TextField
@@ -82,18 +129,47 @@ export default function SignIn() {
             label="Password"
             type="password"
             id="password"
-            autoComplete="current-password"
+            onChange={handlePasswordChange}
+            value={password}
+            // autoComplete="current-password"
           />
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="TypeRadBtn"
+              id="ProcurementRadBtn"
+              value="Procurement Staff"
+              checked={typeProc}
+              onChange={handlSelectedProcurementChange}
+            />
+            <label class="form-check-label" for="ProcurementTypLbl">
+              Procurement Staff
+            </label>
+
+            <input
+              class="form-check-input"
+              type="radio"
+              name="TypeRadBtn"
+              id="ManagementRadBtn"
+              value="Management Staff"
+              checked={typeMana}
+              onChange={handlSelectedManagementChange}
+            />
+            <label class="form-check-label" for="ManagementTypLbl">
+              Management Staff
+            </label>
+          </div>
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
           <Button
-            type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={handleSubmit}
           >
             Sign In
           </Button>
@@ -103,12 +179,11 @@ export default function SignIn() {
                 {"Don't have an account? Sign Up"}
               </Link> */}
             </Grid>
-            <Grid item  >
+            <Grid item>
               <Link href="#" variant="body2">
                 Forgot password?
               </Link>
             </Grid>
-            
           </Grid>
         </form>
       </div>
